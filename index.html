@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -99,7 +99,7 @@
         
         <h2>Added Times</h2>
         <ul id="time-list">
-            <!-- Time entries will be added here -->
+           
         </ul>
         
         <div class="total" id="total-time">Total: 0 hours 0 minutes</div>
@@ -153,4 +153,264 @@
         });
     </script>
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time and Weight Calculators</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .calculator {
+            display: none;
+        }
+        .calculator.active {
+            display: block;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #switchBtn {
+            display: block;
+            margin: 20px auto;
+        }
+        .dashboard {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        .total {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #f8f9fa;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Time and Weight Calculators</h1>
+        <button id="switchBtn">Switch to Weight Calculator</button>
+        
+        <!-- Time Calculator -->
+        <div id="timeCalculator" class="calculator active">
+            <h2>Time Calculator</h2>
+            <div class="input-group">
+                <label for="hours">Hours:</label>
+                <input type="number" id="hours" min="0">
+            </div>
+            <div class="input-group">
+                <label for="minutes">Minutes:</label>
+                <input type="number" id="minutes" min="0" max="59">
+            </div>
+            <button id="addTime">Add Entry</button>
+            <button id="saveTimeLocal">Save to Local Storage</button>
+            <button id="saveTimePermanent">Save Time Entries Permanently (Download JSON)</button>
+            <div class="dashboard">
+                <h3>Time Entries Dashboard</h3>
+                <div id="timeTotal" class="total"></div>
+                <ul id="timeEntries"></ul>
+            </div>
+        </div>
+        
+        <!-- Weight Calculator -->
+        <div id="weightCalculator" class="calculator">
+            <h2>Weight Calculator</h2>
+            <div class="input-group">
+                <label for="kg">Kilograms:</label>
+                <input type="number" id="kg" min="0">
+            </div>
+            <div class="input-group">
+                <label for="grams">Grams:</label>
+                <input type="number" id="grams" min="0" max="999">
+            </div>
+            <button id="addWeight">Add Entry</button>
+            <button id="saveWeightLocal">Save to Local Storage</button>
+            <button id="saveWeightPermanent">Save Weight Entries Permanently (Download JSON)</button>
+            <div class="dashboard">
+                <h3>Weight Entries Dashboard</h3>
+                <div id="weightTotal" class="total"></div>
+                <ul id="weightEntries"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const switchBtn = document.getElementById('switchBtn');
+        const timeCalculator = document.getElementById('timeCalculator');
+        const weightCalculator = document.getElementById('weightCalculator');
+        const addTimeBtn = document.getElementById('addTime');
+        const saveTimeLocalBtn = document.getElementById('saveTimeLocal');
+        const addWeightBtn = document.getElementById('addWeight');
+        const saveWeightLocalBtn = document.getElementById('saveWeightLocal');
+        const saveTimePermanentBtn = document.getElementById('saveTimePermanent');
+        const saveWeightPermanentBtn = document.getElementById('saveWeightPermanent');
+        const timeEntriesUl = document.getElementById('timeEntries');
+        const weightEntriesUl = document.getElementById('weightEntries');
+        const timeTotalDiv = document.getElementById('timeTotal');
+        const weightTotalDiv = document.getElementById('weightTotal');
+
+        let timeEntries = JSON.parse(localStorage.getItem('timeEntries')) || [];
+        let weightEntries = JSON.parse(localStorage.getItem('weightEntries')) || [];
+        let currentCalculator = 'time'; // 'time' or 'weight'
+
+        function calculateTimeTotal() {
+            const totalMinutes = timeEntries.reduce((sum, entry) => sum + entry.totalMinutes, 0);
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            return { hours, minutes };
+        }
+
+        function calculateWeightTotal() {
+            const totalGrams = weightEntries.reduce((sum, entry) => sum + entry.totalGrams, 0);
+            const kg = Math.floor(totalGrams / 1000);
+            const grams = totalGrams % 1000;
+            return { kg, grams };
+        }
+
+        function displayTimeEntries() {
+            timeEntriesUl.innerHTML = '';
+            timeEntries.forEach((entry, index) => {
+                const li = document.createElement('li');
+                li.textContent = `Entry ${index + 1}: ${entry.hours} hours, ${entry.minutes} minutes, Total Minutes: ${entry.totalMinutes}`;
+                timeEntriesUl.appendChild(li);
+            });
+            const total = calculateTimeTotal();
+            timeTotalDiv.textContent = `Total Time: ${total.hours} hours, ${total.minutes} minutes`;
+        }
+
+        function displayWeightEntries() {
+            weightEntriesUl.innerHTML = '';
+            weightEntries.forEach((entry, index) => {
+                const li = document.createElement('li');
+                li.textContent = `Entry ${index + 1}: ${entry.kg} kg, ${entry.grams} grams, Total Grams: ${entry.totalGrams}`;
+                weightEntriesUl.appendChild(li);
+            });
+            const total = calculateWeightTotal();
+            weightTotalDiv.textContent = `Total Weight: ${total.kg} kg, ${total.grams} grams`;
+        }
+
+        displayTimeEntries();
+        displayWeightEntries();
+
+        function showCalculator(calc) {
+            timeCalculator.classList.remove('active');
+            weightCalculator.classList.remove('active');
+            if (calc === 'time') {
+                timeCalculator.classList.add('active');
+                switchBtn.textContent = 'Switch to Weight Calculator';
+            } else {
+                weightCalculator.classList.add('active');
+                switchBtn.textContent = 'Switch to Time Calculator';
+            }
+            currentCalculator = calc;
+        }
+
+        switchBtn.addEventListener('click', () => {
+            showCalculator(currentCalculator === 'time' ? 'weight' : 'time');
+        });
+
+        function addTimeEntry() {
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const totalMinutes = hours * 60 + minutes;
+            const entry = { hours, minutes, totalMinutes };
+            timeEntries.push(entry);
+            localStorage.setItem('timeEntries', JSON.stringify(timeEntries));
+            displayTimeEntries();
+            // Clear inputs
+            document.getElementById('hours').value = '';
+            document.getElementById('minutes').value = '';
+        }
+
+        addTimeBtn.addEventListener('click', addTimeEntry);
+        saveTimeLocalBtn.addEventListener('click', addTimeEntry); // Same as add
+
+        function addWeightEntry() {
+            const kg = parseInt(document.getElementById('kg').value) || 0;
+            const grams = parseInt(document.getElementById('grams').value) || 0;
+            const totalGrams = kg * 1000 + grams;
+            const entry = { kg, grams, totalGrams };
+            weightEntries.push(entry);
+            localStorage.setItem('weightEntries', JSON.stringify(weightEntries));
+            displayWeightEntries();
+            // Clear inputs
+            document.getElementById('kg').value = '';
+            document.getElementById('grams').value = '';
+        }
+
+        addWeightBtn.addEventListener('click', addWeightEntry);
+        saveWeightLocalBtn.addEventListener('click', addWeightEntry); // Same as add
+
+        saveTimePermanentBtn.addEventListener('click', () => {
+            const dataStr = JSON.stringify(timeEntries, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'timeEntries.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        saveWeightPermanentBtn.addEventListener('click', () => {
+            const dataStr = JSON.stringify(weightEntries, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'weightEntries.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
 </html>
+
