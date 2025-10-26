@@ -1,293 +1,135 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-        .reset-btn {
-            background: #dc3545;
-        }
-        .reset-btn:hover {
-            background: #c82333;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .total {
-            font-size: 1.5em;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 20px;
-            color: #333;
-        }
-        .error {
-            color: red;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Time Calculator</h1>
-        <p>Enter hours and minutes to add up multiple time entries.</p>
-        
-        <form id="time-form">
-            <label for="hours">Hours:</label>
-            <input type="number" id="hours" min="0" required>
-            
-            <label for="minutes">Minutes:</label>
-            <input type="number" id="minutes" min="0" max="59" required>
-            
-            <button type="submit">Add Time</button>
-        </form>
-        
-        <button class="reset-btn" id="reset">Reset All</button>
-        
-        <div id="error-message" class="error" style="display: none;"></div>
-        
-        <h2>Added Times</h2>
-        <ul id="time-list">
-           
-        </ul>
-        
-        <div class="total" id="total-time">Total: 0 hours 0 minutes</div>
-    </div>
-
-    <script>
-        let totalMinutes = 0;
-        const timeList = document.getElementById('time-list');
-        const totalTimeEl = document.getElementById('total-time');
-        const errorMessage = document.getElementById('error-message');
-
-        // Function to update total display
-        function updateTotal() {
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            totalTimeEl.textContent = `Total: ${hours} hours ${minutes} minutes`;
-        }
-
-        // Handle form submission
-        document.getElementById('time-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const hours = parseInt(document.getElementById('hours').value) || 0;
-            const minutes = parseInt(document.getElementById('minutes').value) || 0;
-            
-            if (minutes < 0 || minutes > 59) {
-                errorMessage.textContent = 'Minutes must be between 0 and 59.';
-                errorMessage.style.display = 'block';
-                return;
-            }
-            
-            errorMessage.style.display = 'none';
-            const entryMinutes = hours * 60 + minutes;
-            totalMinutes += entryMinutes;
-            
-            // Add to list
-            const li = document.createElement('li');
-            li.textContent = `${hours} hours ${minutes} minutes`;
-            timeList.appendChild(li);
-            
-            // Reset form
-            document.getElementById('time-form').reset();
-            updateTotal();
-        });
-
-        // Handle reset
-        document.getElementById('reset').addEventListener('click', () => {
-            totalMinutes = 0;
-            timeList.innerHTML = '';
-            updateTotal();
-            errorMessage.style.display = 'none';
-        });
-    </script>
-</body>
-</html> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time and Weight Calculators</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-        }
-        .calculator {
-            display: none;
-        }
-        .calculator.active {
-            display: block;
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px 15px;
-            margin: 5px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        button.delete {
-            background-color: #dc3545;
-        }
-        button.delete:hover {
-            background-color: #c82333;
-        }
-        #switchBtn {
-            display: block;
-            margin: 20px auto;
-        }
-        .dashboard {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-        }
-        .total {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background: #f8f9fa;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 4px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time and Weight Calculators</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .calculator {
+      display: none;
+    }
+    .calculator.active {
+      display: block;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    button.delete {
+      background-color: #dc3545;
+    }
+    button.delete:hover {
+      background-color: #c82333;
+    }
+    #switchBtn {
+      display: block;
+      margin: 20px auto;
+    }
+    .dashboard {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+    }
+    .total {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background: #f8f9fa;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Time and Weight Calculators</h1>
-        <button id="switchBtn">Switch to Weight Calculator</button>
-        
-        <!-- Time Calculator -->
-        <div id="timeCalculator" class="calculator active">
-            <h2>Time Calculator</h2>
-            <div class="input-group">
-                <label for="hours">Hours:</label>
-                <input type="number" id="hours" min="0">
-            </div>
-            <div class="input-group">
-                <label for="minutes">Minutes:</label>
-                <input type="number" id="minutes" min="0" max="59">
-            </div>
-            <button id="addTime">Add Entry</button>
-            <button id="deleteTime" class="delete">Delete All Time Data</button>
-            <button id="saveTimePermanent">Save Time Entries Permanently (Download JSON)</button>
-            <div class="dashboard">
-                <h3>Time Entries Dashboard</h3>
-                <div id="timeTotal" class="total"></div>
-                <ul id="timeEntries"></ul>
-            </div>
-        </div>
-        
-        <!-- Weight Calculator -->
-        <div id="weightCalculator" class="calculator">
-            <h2>Weight Calculator</h2>
-            <div class="input-group">
-                <label for="kg">Kilograms:</label>
-                <input type="number" id="kg" min="0">
-            </div>
-            <div class="input-group">
-                <label for="grams">Grams:</label>
-                <input type="number" id="grams" min="0" max="999">
-            </div>
-            <button id="addWeight">Add Entry</button>
-            <button id="deleteWeight" class="delete">Delete All Weight Data</button>
-            <button id="saveWeightPermanent">Save Weight Entries Permanently (Download JSON)</button>
-            <div class="dashboard">
-                <h3>Weight Entries Dashboard</h3>
-                <div id="weightTotal" class="total"></div>
-                <ul id="weightEntries"></ul>
-            </div>
-        </div>
+  <div class="container">
+    <h1>Time and Weight Calculators</h1>
+    <button id="switchBtn">Switch to Weight Calculator</button>
+    
+    <!-- Time Calculator -->
+    <div id="timeCalculator" class="calculator active">
+      <h2>Time Calculator</h2>
+      <div class="input-group">
+        <label for="hours">Hours:</label>
+        <input type="number" id="hours" min="0">
+      </div>
+      <div class="input-group">
+        <label for="minutes">Minutes:</label>
+        <input type="number" id="minutes" min="0" max="59">
+      </div>
+      <button id="addTime">Add Entry</button>
+      <button id="deleteTime" class="delete">Delete All Time Data</button>
+      <div class="dashboard">
+        <h3>Time Entries Dashboard</h3>
+        <div id="timeTotal" class="total"></div>
+        <ul id="timeEntries"></ul>
+      </div>
     </div>
+    
+    <!-- Weight Calculator -->
+    <div id="weightCalculator" class="calculator">
+      <h2>Weight Calculator</h2>
+      <div class="input-group">
+        <label for="kg">Kilograms:</label>
+        <input type="number" id="kg" min="0">
+      </div>
+      <div class="input-group">
+        <label for="grams">Grams:</label>
+        <input type="number" id="grams" min="0" max="999">
+      </div>
+      <button id="addWeight">Add Entry</button>
+      <button id="deleteWeight" class="delete">Delete All Weight Data</button>
+      <div class="dashboard">
+        <h3>Weight Entries Dashboard</h3>
+        <div id="weightTotal" class="total"></div>
+        <ul id="weightEntries"></ul>
+      </div>
+    </div>
+  </div>
 
-    <script>
+  <script>
     const switchBtn = document.getElementById('switchBtn');
     const timeCalculator = document.getElementById('timeCalculator');
     const weightCalculator = document.getElementById('weightCalculator');
@@ -295,8 +137,6 @@
     const deleteTimeBtn = document.getElementById('deleteTime');
     const addWeightBtn = document.getElementById('addWeight');
     const deleteWeightBtn = document.getElementById('deleteWeight');
-    const saveTimePermanentBtn = document.getElementById('saveTimePermanent');
-    const saveWeightPermanentBtn = document.getElementById('saveWeightPermanent');
     const timeEntriesUl = document.getElementById('timeEntries');
     const weightEntriesUl = document.getElementById('weightEntries');
     const timeTotalDiv = document.getElementById('timeTotal');
@@ -307,123 +147,109 @@
     let weightEntries = JSON.parse(localStorage.getItem('weightEntries')) || [];
     let currentCalculator = localStorage.getItem('currentCalculator') || 'time';
 
-    // Save everything to localStorage
+    // Save all data
     function saveAll() {
-        localStorage.setItem('timeEntries', JSON.stringify(timeEntries));
-        localStorage.setItem('weightEntries', JSON.stringify(weightEntries));
-        localStorage.setItem('currentCalculator', currentCalculator);
+      localStorage.setItem('timeEntries', JSON.stringify(timeEntries));
+      localStorage.setItem('weightEntries', JSON.stringify(weightEntries));
+      localStorage.setItem('currentCalculator', currentCalculator);
     }
 
     // Calculations
     function calculateTimeTotal() {
-        const totalMinutes = timeEntries.reduce((sum, entry) => sum + entry.totalMinutes, 0);
-        return {
-            hours: Math.floor(totalMinutes / 60),
-            minutes: totalMinutes % 60
-        };
+      const totalMinutes = timeEntries.reduce((sum, entry) => sum + entry.totalMinutes, 0);
+      return {
+        hours: Math.floor(totalMinutes / 60),
+        minutes: totalMinutes % 60
+      };
     }
 
     function calculateWeightTotal() {
-        const totalGrams = weightEntries.reduce((sum, entry) => sum + entry.totalGrams, 0);
-        return {
-            kg: Math.floor(totalGrams / 1000),
-            grams: totalGrams % 1000
-        };
+      const totalGrams = weightEntries.reduce((sum, entry) => sum + entry.totalGrams, 0);
+      return {
+        kg: Math.floor(totalGrams / 1000),
+        grams: totalGrams % 1000
+      };
     }
 
     // Display functions
     function displayTimeEntries() {
-        timeEntriesUl.innerHTML = '';
-        timeEntries.forEach((entry, index) => {
-            const li = document.createElement('li');
-            li.textContent = `Entry ${index + 1}: ${entry.hours}h ${entry.minutes}m → Total ${entry.totalMinutes} mins`;
-            timeEntriesUl.appendChild(li);
-        });
-        const total = calculateTimeTotal();
-        timeTotalDiv.textContent = `Total Time: ${total.hours} hours, ${total.minutes} minutes`;
+      timeEntriesUl.innerHTML = '';
+      timeEntries.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.textContent = `Entry ${index + 1}: ${entry.hours}h ${entry.minutes}m → Total ${entry.totalMinutes} mins`;
+        timeEntriesUl.appendChild(li);
+      });
+      const total = calculateTimeTotal();
+      timeTotalDiv.textContent = `Total Time: ${total.hours} hours, ${total.minutes} minutes`;
     }
 
     function displayWeightEntries() {
-        weightEntriesUl.innerHTML = '';
-        weightEntries.forEach((entry, index) => {
-            const li = document.createElement('li');
-            li.textContent = `Entry ${index + 1}: ${entry.kg}kg ${entry.grams}g → Total ${entry.totalGrams} grams`;
-            weightEntriesUl.appendChild(li);
-        });
-        const total = calculateWeightTotal();
-        weightTotalDiv.textContent = `Total Weight: ${total.kg} kg, ${total.grams} grams`;
+      weightEntriesUl.innerHTML = '';
+      weightEntries.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.textContent = `Entry ${index + 1}: ${entry.kg}kg ${entry.grams}g → Total ${entry.totalGrams} grams`;
+        weightEntriesUl.appendChild(li);
+      });
+      const total = calculateWeightTotal();
+      weightTotalDiv.textContent = `Total Weight: ${total.kg} kg, ${total.grams} grams`;
     }
 
     // Show calculator
     function showCalculator(calc) {
-        timeCalculator.classList.remove('active');
-        weightCalculator.classList.remove('active');
-        if (calc === 'time') {
-            timeCalculator.classList.add('active');
-            switchBtn.textContent = 'Switch to Weight Calculator';
-        } else {
-            weightCalculator.classList.add('active');
-            switchBtn.textContent = 'Switch to Time Calculator';
-        }
-        currentCalculator = calc;
-        saveAll();
+      timeCalculator.classList.remove('active');
+      weightCalculator.classList.remove('active');
+      if (calc === 'time') {
+        timeCalculator.classList.add('active');
+        switchBtn.textContent = 'Switch to Weight Calculator';
+      } else {
+        weightCalculator.classList.add('active');
+        switchBtn.textContent = 'Switch to Time Calculator';
+      }
+      currentCalculator = calc;
+      saveAll();
     }
 
     // Add entries
     function addTimeEntry() {
-        const hours = parseInt(document.getElementById('hours').value) || 0;
-        const minutes = parseInt(document.getElementById('minutes').value) || 0;
-        const totalMinutes = hours * 60 + minutes;
-        if (totalMinutes <= 0) return alert("Please enter valid time!");
-        timeEntries.push({ hours, minutes, totalMinutes });
-        saveAll();
-        displayTimeEntries();
-        document.getElementById('hours').value = '';
-        document.getElementById('minutes').value = '';
+      const hours = parseInt(document.getElementById('hours').value) || 0;
+      const minutes = parseInt(document.getElementById('minutes').value) || 0;
+      const totalMinutes = hours * 60 + minutes;
+      if (totalMinutes <= 0) return alert("Please enter valid time!");
+      timeEntries.push({ hours, minutes, totalMinutes });
+      saveAll();
+      displayTimeEntries();
+      document.getElementById('hours').value = '';
+      document.getElementById('minutes').value = '';
     }
 
     function addWeightEntry() {
-        const kg = parseInt(document.getElementById('kg').value) || 0;
-        const grams = parseInt(document.getElementById('grams').value) || 0;
-        const totalGrams = kg * 1000 + grams;
-        if (totalGrams <= 0) return alert("Please enter valid weight!");
-        weightEntries.push({ kg, grams, totalGrams });
-        saveAll();
-        displayWeightEntries();
-        document.getElementById('kg').value = '';
-        document.getElementById('grams').value = '';
+      const kg = parseInt(document.getElementById('kg').value) || 0;
+      const grams = parseInt(document.getElementById('grams').value) || 0;
+      const totalGrams = kg * 1000 + grams;
+      if (totalGrams <= 0) return alert("Please enter valid weight!");
+      weightEntries.push({ kg, grams, totalGrams });
+      saveAll();
+      displayWeightEntries();
+      document.getElementById('kg').value = '';
+      document.getElementById('grams').value = '';
     }
 
-    // Delete all
+    // Delete all entries
     deleteTimeBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to delete all time data?')) {
-            timeEntries = [];
-            saveAll();
-            displayTimeEntries();
-        }
+      if (confirm('Are you sure you want to delete all time data?')) {
+        timeEntries = [];
+        saveAll();
+        displayTimeEntries();
+      }
     });
 
     deleteWeightBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to delete all weight data?')) {
-            weightEntries = [];
-            saveAll();
-            displayWeightEntries();
-        }
+      if (confirm('Are you sure you want to delete all weight data?')) {
+        weightEntries = [];
+        saveAll();
+        displayWeightEntries();
+      }
     });
-
-    // Download JSON
-    function downloadJSON(filename, data) {
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-
-    saveTimePermanentBtn.addEventListener('click', () => downloadJSON('timeEntries.json', timeEntries));
-    saveWeightPermanentBtn.addEventListener('click', () => downloadJSON('weightEntries.json', weightEntries));
 
     // Event listeners
     addTimeBtn.addEventListener('click', addTimeEntry);
@@ -434,7 +260,6 @@
     displayTimeEntries();
     displayWeightEntries();
     showCalculator(currentCalculator);
-</script>
-
+  </script>
 </body>
 </html>
